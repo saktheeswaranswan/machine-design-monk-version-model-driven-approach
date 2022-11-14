@@ -326,14 +326,20 @@ app.post('/api/v1/usage_log', (req, res) => {
     var ip_address;
     var note;
     ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-//    console.log('SERVER: In POST /api/v1/usage_log ip_address='+ip_address+' req.body=',req.body);
+    console.log('SERVER: In POST /api/v1/usage_log ip_address='+ip_address+' req.body=',req.body);
     note = JSON.stringify(req.body); // Convert blob to string
+    note = note.replace(/[']/ig,"''");
+    var tag = req.body.tag !== undefined ? req.body.tag.replace(/[']/ig,"''") : null;
+    var action = req.body.action !== undefined ? req.body.action.replace(/[']/ig,"''") : null;
+    var event_value = req.body.note.event_value !== undefined ? req.body.note.event_value : 0;
+    var event_label = req.body.note.event_label !== undefined ? req.body.note.event_label.replace(/[']/ig,"''") : null;
+    note = note.replace(/[']/ig,"''");
+    console.log('ip_address=', ip_address, 'note=', note, 'tag=', tag, 'action=', action, 'event_value=', event_value, 'event_label=', event_label)
     var connection = startConnection();
-    note = note.replace(/[']/ig,"''"); // replace one single quote with an two single quotes throughout
-    var stmt = 'INSERT INTO usage_log (ip_address, note) VALUES (\''+ip_address+'\',\''+note+'\')';
-//    console.log('SERVER: stmt='+stmt);
+    var stmt = 'INSERT INTO usage_log (ip_address, note, tag, action, event_value, event_label) VALUES (\''+ip_address+'\',\''+note+'\',\''+tag+'\',\''+action+'\',\''+event_value+'\',\''+event_label+'\')';
+    console.log('SERVER: stmt='+stmt);
     connection.query(stmt, function(err, rows, fields) {
-//        console.log('SERVER: After INSERT err=', err, ' rows=', rows);
+        console.log('SERVER: After INSERT err=', err, ' rows=', rows);
         if (err) {
             res.status(500).end();
             connection.end();
@@ -341,7 +347,7 @@ app.post('/api/v1/usage_log', (req, res) => {
             throw err;
         } else {
             var value = {};
-//            console.log('SERVER: After INSERT value=', value);
+            console.log('SERVER: After INSERT value=', value);
             res.status(200).json(value);
             connection.end();
             console.log('SERVER: 200 - OK');

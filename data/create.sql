@@ -49,7 +49,11 @@ CREATE TABLE `usage_log` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ip_address` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `note` longtext COLLATE utf8_unicode_ci DEFAULT NULL
+  `note` longtext COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tag` longtext COLLATE utf8_unicode_ci DEFAULT NULL,
+  `action` longtext COLLATE utf8_unicode_ci DEFAULT NULL,
+  `event_value` int(11) DEFAULT NULL,
+  `event_label` longtext COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
